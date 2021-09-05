@@ -1,4 +1,4 @@
-package com.kh.surf;
+package com.yhr.novel;
 
 import java.text.DateFormat;
 import java.util.Date;
