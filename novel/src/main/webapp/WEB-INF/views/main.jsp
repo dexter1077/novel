@@ -52,7 +52,7 @@
         height: 350px;
     }
 
-    div{box-sizing: border-box; border:1px solid red;}
+    div{box-sizing: border-box;}
 </style>
 </head>
 <body>
