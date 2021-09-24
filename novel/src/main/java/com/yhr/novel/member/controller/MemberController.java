@@ -56,7 +56,7 @@ public class MemberController {
 	}
 	
 	/**
-	 * 
+	 * 마이페이지 뷰 포워딩
 	 */
 	@RequestMapping("myPage.me")
 	public String myPageView() {
@@ -82,6 +82,9 @@ public class MemberController {
 		return mv;
 	}
 	
+	/**
+	 * 회원 로그인
+	 */
 	@RequestMapping("logout.me")
 	public String logoutMember(HttpSession session) {
 		

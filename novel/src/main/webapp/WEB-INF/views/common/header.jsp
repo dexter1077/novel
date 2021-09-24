@@ -106,24 +106,57 @@
                     <input type="password" class="form-control" style="width : 200px" placeholder="pwd" name="userPwd"><br>
                     <button type="submit" class="btn btn-info">로그인</button>
                     <br><br>
-                    <button class="btn btn-success">네이버</button><button class="btn btn-warning">카카오</button><br>
+                    <button class="btn btn-success">네이버</button><button class="btn btn-warning" onclick="kakaoLogin();">카카오</button><br>
                     <a href="enrollForm.me">일반 회원가입</a>
                 </div>
             </form>
                 
             <!-- Modal footer -->
             <div class="modal-footer">
-              <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
       
-          </div>
+        </div>
         </div>
       </div>
 
+    <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
     <script>
         $(document).on('click', '.logout-btn', function(){
             location.href = "logout.me";
         })
+
+        // 카카오 로그인
+        function kakaoLogin() {
+            console.log('aa');
+            $.ajax({
+                url : '/login/getKakaoAuthUrl',
+                type: 'get',
+                async : false,
+                dataType : 'text',
+                success: function(res){
+                    location.href = res;
+                }
+            });
+        }
+        
+        $(document).ready(function(){
+
+            var kakaoinfo = '${kakaoInfo}';
+
+            if(kakaoInfo != ""){
+                var data = JSON.parse(kakaoInfo);
+
+                alert("카카오로그인 성공 \n accessToken : " + data['accessToken']);
+                alert(
+                "user : \n" + "email : "
+                + data['email'] 
+                + '\n nickname : '
+                + data['nickname']);
+            }
+
+        })  ;
     </script>
+
 </body>
 </html>
