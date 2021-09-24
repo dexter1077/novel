@@ -7,11 +7,14 @@
 		<setting name="jdbcTypeForNull" value="NULL"/>
 	</settings>
 	
-	<!-- 별칭 등록
+	
 	<typeAliases>
-		<typeAlias type=""/>
+		<typeAlias type="com.yhr.novel.member.model.vo.Member" alias="Member"/>
 	</typeAliases>
-	 -->
+	 
 	 
 	 <!-- mappers 에 mapper 파일들 등록 할 수 있다. -->
+	 <mappers>
+	 	<mapper resource="/mappers/member-mapper.xml"/>
+	 </mappers>
 </configuration>
