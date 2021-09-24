@@ -9,8 +9,8 @@
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
 		<property name="url" value="jdbc:oracle:thin:@localhost:1521:xe"/>
-		<property name="username" value="SURF"/>
-		<property name="password" value="SURF"/>
+		<property name="username" value="NOVEL"/>
+		<property name="password" value="NOVEL"/>
 	</bean>
 	
 	<!-- SqlSessionFactory -->

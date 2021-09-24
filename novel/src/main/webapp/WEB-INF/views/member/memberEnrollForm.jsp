@@ -50,15 +50,18 @@
                 </tr>
                 <tr>
                     <th>비밀번호</th>
-                    <td><input type="text" class="form-control" name="userPwd"></td>
+                    <td><input type="password" id="enrollpwd1" class="form-control" name="userPwd"></td>
                 </tr>
                 <tr>
                     <th>비밀번호 확인</th>
-                    <td><input type="text" class="form-control" name="pwdCheck"></td>
+                    <td><input type="password" id="enrollpwd2" class="form-control" name="pwdCheck"></td>
+                </tr>
+                <tr>
+                    <th id="check-message" colspan="2" style="color:red; display:none;">사용가능한비밀번호</th>
                 </tr>
                 <tr>
                     <th>이름</th>
-                    <td><input type="text" class="form-control" name="userName"></td>
+                    <td><input type="text" class="form-control" name="username"></td>
                 </tr>
                 <tr>
                     <th>닉네임</th>
@@ -66,11 +69,15 @@
                 </tr>
                 <tr>
                     <th>성별</th>
-                    <td>남 : <input type="radio" name="gender" value="M" checked> 여 : <input type="radio" name="gender" id="W"></td>
+                    <td>남 : <input type="radio" name="gender" value="M" checked> 여 : <input type="radio" name="gender" value="W"></td>
                 </tr>
                 <tr>
                     <th>주소</th>
-                    <td><input type="text" class="form-control" name="address"></td>
+                    <td><input id="address_kakao" type="text" class="form-control" name="address"></td>
+                </tr>
+                <tr>
+                    <th>상세주소</th>
+                    <td><input type="text" class="form-control" name="addressDetail"></td>
                 </tr>
                 <tr>
                     <th>생년월일</th>
@@ -78,7 +85,7 @@
                 </tr>
                 <tr>
                     <th>전화번호</th>
-                    <td><input type="text" class="form-control" name="phone"></td>
+                    <td><input type="text" class="form-control" name="phone" maxlength="11"></td>
                 </tr>
                 <tr>
                     <th>이메일</th>
@@ -86,9 +93,53 @@
                 </tr>
             </table>
             <br>
-            <button type="submit" class="btn btn-success">회원가입</button>
+            <button id="submit-btn" type="submit" class="btn btn-success" disabled>회원가입</button>
         </form>
-            
     </div>
+
+    <script>
+        // 비밀번호 재확인
+        $(document).on('keyup', 'input[type=password]', function(){
+
+            let pwd1 = $('#enrollpwd1').val();
+            let pwd2 = $('#enrollpwd2').val();
+
+            let $checkMsg = $('#check-message');
+
+            if(pwd1 == pwd2){    
+                $checkMsg.css('display', 'block')
+                        .css('color','blue')
+                        .text('비밀번호 사용가능');
+                $('#submit-btn').removeAttr('disabled');
+            }else{
+                $checkMsg.css('display', 'block')
+                        .css('color','red')
+                        .text('비밀번호 불일치');
+                $('#submit-btn').attr('disabled');
+            }
+
+        });
+    </script>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script>
+    window.onload = function(){
+        document.getElementById("address_kakao").addEventListener("click", function(){ //주소입력칸을 클릭하면
+            let width = 500;
+            let height = 600;
+            //카카오 지도 발생
+            new daum.Postcode({
+                width:width,
+                height:height,
+                oncomplete: function(data) { //선택시 입력값 세팅
+                    document.getElementById("address_kakao").value = data.address; // 주소 넣기
+                    document.querySelector("input[name=addressDetail]").focus(); //상세입력 포커싱
+                }
+            }).open({
+                left: (window.screen.width / 2) - (width / 2),
+                top: (window.screen.height / 2) - (height / 2)
+            });
+        });
+    }
+    </script>
 </body>
 </html>

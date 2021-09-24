@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="memberMapper">
+
+  <resultMap type="Member" id="memberResult">
+  	<result column="user_no" property="userNo"/>
+  	<result column="user_id" property="userId"/>
+  	<result column="user_pwd" property="userPwd"/>
+  	<result column="username" property="username"/>
+  	<result column="nickname" property="nickname"/>
+  	<result column="gender" property="gender"/>
+  	<result column="address" property="address"/>
+  	<result column="birthday" property="birthday"/>
+  	<result column="enroll_date" property="enrollDate"/>
+  	<result column="modify_date" property="modifyDate"/>
+  	<result column="phone" property="phone"/>
+  	<result column="email" property="email"/>
+  	<result column="status" property="status"/>
+  	<result column="coin" property="coin"/>
+  </resultMap>
+  
+  <insert id="insertMember">
+  	insert
+  	  into member
+  	     (
+  	       user_no
+  	     , user_id
+  	     , user_pwd
+  	     , username
+  	     , nickname
+  	     , gender
+  	     , address
+  	     , birthday
+  	     , modify_date
+  	     , phone
+  	     , email
+  	     , status
+  	     )
+  	 values
+  	 	(
+  	 	  seq_mno.nextval
+  	 	, #{userId}
+  	 	, #{userPwd}
+  	 	, #{username}
+  	 	, #{nickname}
+  	 	, #{gender}
+  	 	, #{address}
+  	 	, #{birthday}
+  	 	, sysdate
+  	 	, #{phone}
+  	 	, #{email}
+  	 	, 'Y'
+  	 	)
+  </insert>
+  
+  <select id="loginMember" resultMap="memberResult">
+  	select user_no
+  	     , user_id
+  	     , user_pwd
+  	     , username
+  	     , nickname
+  	     , gender
+  	  from member
+  	 where status = 'Y'
+  	   and user_id = #{userId}
+  </select>
+  
+</mapper>

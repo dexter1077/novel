@@ -18,6 +18,16 @@
 <!-- Latest compiled JavaScript -->
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- alertify CDN 연결 -->
+<!-- JavaScript -->
+<script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+<!-- CSS -->
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
+<!-- Default theme -->
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
+<!-- Semantic UI theme -->
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/semantic.min.css"/>
 <style>
     .head-area{
         width: 100%;
@@ -34,7 +44,7 @@
         font-size: 24px;
         line-height: 50px;
     }
-    #login-box:hover{
+    .icon-box:hover{
         cursor: pointer;
         font-weight: 600;
     }
@@ -51,15 +61,29 @@
 </style>
 </head>
 <body>
+<c:if test="${ !empty alertMsg }">
+    <script>
+        alertify.alert("${alertMsg}");
+    </script>
+    <c:remove var="alertMsg" scope="session"/>
+</c:if>
+
 	<div class="head-area">
         <div class="icon-box" align="right">
-            <span id="login-box" data-toggle="modal" data-target="#loginModal">Login</span>
+            <c:choose>
+                <c:when test="${ empty loginUser}">
+                    <span class="login-btn" data-toggle="modal" data-target="#loginModal">Login</span>
+                </c:when>
+                <c:otherwise>
+                    <span class="logout-btn">Logout</span>
+                </c:otherwise>
+            </c:choose>
         </div>
     </div>
     <div class="head-area">
         <div class="menu-box">
             <a href="/novel">홈</a>
-            <a href="">공모전</a>
+            <a href="contest.no">공모전</a>
             <a href="">웹소설</a>
             <a href="">작품올리기</a>
             <span align="right">선호장르</span>
@@ -80,7 +104,8 @@
                 <div class="modal-body" align="center">
                     <input type="text" class="form-control" style="width: 200px;" placeholder="id" name="userId">
                     <input type="password" class="form-control" style="width : 200px" placeholder="pwd" name="userPwd"><br>
-                    <button type="submit" class="btn btn-info">로그인</button><br>
+                    <button type="submit" class="btn btn-info">로그인</button>
+                    <br><br>
                     <button class="btn btn-success">네이버</button><button class="btn btn-warning">카카오</button><br>
                     <a href="enrollForm.me">일반 회원가입</a>
                 </div>
@@ -95,5 +120,10 @@
         </div>
       </div>
 
+    <script>
+        $(document).on('click', '.logout-btn', function(){
+            location.href = "logout.me";
+        })
+    </script>
 </body>
 </html>
