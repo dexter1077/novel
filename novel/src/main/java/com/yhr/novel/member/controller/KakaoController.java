@@ -1,30 +1,140 @@
 package com.yhr.novel.member.controller;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.HashMap;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
-import org.json.simple.JSONObject;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicNameValuePair;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 public class KakaoController {
 	
+	// REST API KEY : aba9e6da70ca9621f0d3c372aa2df3af
+	
+	// URI 하나만 설정한다면 상수로 선언
+	private final static String K_CLIENT_ID = "aba9e6da70ca9621f0d3c372aa2df3af";	
+	
+	/**
+	 * 인가코드 받기Url
+	 */
+	@ResponseBody
+	@RequestMapping(value = "kauth.do", method = RequestMethod.GET)
+	public String getKakaoAuth(String type, HttpSession session, Model model) {
+		
+		String kakaoUrl = KakaoController.getAuthorizationUrl(type, session);
+		
+		return kakaoUrl;
+	}
+	
+	private static String getAuthorizationUrl(String type, HttpSession session) {
+		
+		String redirectUri = "";
+		
+		if(type.equals("login")) { //로그인 버튼 눌렀을때
+			redirectUri = "http://localhost:8777/novel/klogin.do";
+		}else if(type.equals("enroll")) { // 카카오로 시작하기 버튼을 눌렀을 때
+			redirectUri = "http://localhost:8777/novel/kenroll.do";
+		}
+		
+		String kakaoUrl = "https://kauth.kakao.com/oauth/authorize?client_id=" + K_CLIENT_ID
+						+ "&redirect_uri=" + redirectUri + "&response_type=code";
+		
+		return kakaoUrl;
+	}
+	
+	
+	/**
+	 * authorize_code 권한코드
+	 */
+	public static JsonNode getAccessToken(String type, String authorize_code) {
+		final String RequestUrl = "https://kauth.kakao.com/oauth/token";
+		final List<NameValuePair> postParams = new ArrayList<NameValuePair>();
+		
+		postParams.add(new BasicNameValuePair("grant_type", "authorization_code"));
+		postParams.add(new BasicNameValuePair("client_id", K_CLIENT_ID));
+		
+		if(type.equals("login")) {
+			postParams.add(new BasicNameValuePair("redirect_uri", "http://localhost:8777/novel/klogin.do"));
+		}else if(type.equals("enroll")) {
+			postParams.add(new BasicNameValuePair("redirect_uri", "http://localhost:8777/novel/kenroll.do"));
+		}
+		
+		postParams.add(new BasicNameValuePair("code", authorize_code));
+		
+		final HttpClient client = HttpClientBuilder.create().build();
+		final HttpPost post = new HttpPost(RequestUrl);
+		
+		JsonNode returnNode = null;
+		
+		try {
+			post.setEntity(new UrlEncodedFormEntity(postParams));
+			
+			final HttpResponse response = client.execute(post);
+			
+			ObjectMapper mapper = new ObjectMapper();
+			returnNode = mapper.readTree(response.getEntity().getContent());
+			
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return returnNode;
+		
+	}
+	
+	/**
+	 * @param accessToken
+	 * @return
+	 */
+	public static JsonNode getKakaoUserInfo(JsonNode accessToken) {
+		
+		final String RequestUrl = "https://kapi.kakao.com/v2/user/me";
+		final HttpClient client = HttpClientBuilder.create().build();
+		final HttpPost post = new HttpPost(RequestUrl);
+		
+		post.addHeader("Authorization", "Bearer " + accessToken);
+		JsonNode returnNode = null;
+		
+		try {
+			final HttpResponse response = client.execute(post);
+			
+			//Json형태 반환값 처리
+			ObjectMapper mapper = new ObjectMapper();
+			returnNode = mapper.readTree(response.getEntity().getContent());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return returnNode;
+		
+	}
+	
+
+	
+	/*
+	 * 
 	@RequestMapping(value="/login/getKakaoAuthUrl")
 	public @ResponseBody String getKakaoAuthUrl(HttpServletRequest request) throws Exception {
 		
@@ -35,7 +145,7 @@ public class KakaoController {
 		
 		return reqUrl;
 	}
-	
+
 	// 카카오 연동정보 조회
 	@RequestMapping(value="/login/oauth_kakao")
 	public String oauthKakao(@RequestParam(value="code", required = false)String code, Model model) throws Exception {
@@ -163,4 +273,5 @@ public class KakaoController {
 		
 		return userInfo;
 	}
+	*/
 }

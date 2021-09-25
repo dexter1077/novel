@@ -58,6 +58,13 @@
         text-decoration: none;
         font-weight: 600;
     }
+
+    /*소셜 로그인*/
+    #kBtn:hover, #nBtn:hover{
+        cursor: pointer;
+        opacity: 0.9;
+    }
+
 </style>
 </head>
 <body>
@@ -106,7 +113,9 @@
                     <input type="password" class="form-control" style="width : 200px" placeholder="pwd" name="userPwd"><br>
                     <button type="submit" class="btn btn-info">로그인</button>
                     <br><br>
-                    <button class="btn btn-success">네이버</button><button class="btn btn-warning" onclick="kakaoLogin();">카카오</button><br>
+                    <hr>
+                    <div id="nBtn">네이버</div>
+                    <div id="kBtn"><img style="width: 80px; height: 40px;" src="resources/button/kakao_login_large.png" /></div><br>
                     <a href="enrollForm.me">일반 회원가입</a>
                 </div>
             </form>
@@ -120,13 +129,27 @@
         </div>
       </div>
 
-    <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
     <script>
         $(document).on('click', '.logout-btn', function(){
             location.href = "logout.me";
         })
 
-        // 카카오 로그인
+        $(function(){
+            // 카카오 url 인증요청
+            $.ajax({
+                url:"kauth.do",
+                data:{type : "login"},
+                success : function(kUrl){
+                    $('#kBtn').on("click", function(){
+                        location.href=kUrl;
+                    })
+                },error : function(){
+                    console.log("카카오 url 요청 실패")
+                }
+            })
+        })
+
+        /*
         function kakaoLogin() {
             console.log('aa');
             $.ajax({
@@ -141,21 +164,22 @@
         }
         
         $(document).ready(function(){
-
+            
             var kakaoinfo = '${kakaoInfo}';
-
+            
             if(kakaoInfo != ""){
                 var data = JSON.parse(kakaoInfo);
-
+                
                 alert("카카오로그인 성공 \n accessToken : " + data['accessToken']);
                 alert(
-                "user : \n" + "email : "
-                + data['email'] 
-                + '\n nickname : '
-                + data['nickname']);
-            }
-
-        })  ;
+                    "user : \n" + "email : "
+                    + data['email'] 
+                    + '\n nickname : '
+                    + data['nickname']);
+                }
+                
+            })  ;
+            */
     </script>
 
 </body>
