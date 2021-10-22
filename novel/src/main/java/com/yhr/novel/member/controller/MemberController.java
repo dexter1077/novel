@@ -88,7 +88,7 @@ public class MemberController {
 	}
 	
 	/**
-	 * 회원 로그인
+	 * 회원 로그아웃
 	 */
 	@RequestMapping("logout.me")
 	public String logoutMember(HttpSession session) {

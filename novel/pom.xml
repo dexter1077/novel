@@ -236,11 +236,26 @@
 		    <artifactId>httpclient</artifactId>
 		    <version>4.5.2</version>
 		</dependency>
-		
-		        
 	</dependencies>
     <build>
         <plugins>
+        	<!-- JUnit5 in 스프링 디펜던시  ${junit.platform.version}-->
+        	<plugin>
+        		<artifactId>maven-surefire-plugin</artifactId>
+        		<version>${maven-surefire-plugin.version}</version>
+        		<dependencies>
+        			<dependency>
+	        			<groupId>org.junit.platform</groupId>
+	        			<artifactId>junit-platform-surefire-provider</artifactId>
+	        			<version>5.8.1</version>	        			
+        			</dependency>
+        			<dependency>
+        				<groupId>org.junit.jupiter</groupId>
+        				<artifactId>junit-jupiter-engine</artifactId>
+        				<version>5.8.1</version>
+        			</dependency>
+        		</dependencies>
+        	</plugin>
             <plugin>
                 <artifactId>maven-eclipse-plugin</artifactId>
                 <version>2.9</version>
